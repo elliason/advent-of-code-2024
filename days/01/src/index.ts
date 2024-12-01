@@ -49,39 +49,34 @@ Your actual left and right lists contain many location IDs. What is the total di
  */
 
 const program = Effect.gen(function* () {
-  const path = yield* Path.Path;
-  const fs = yield* FileSystem.FileSystem;
+    const path = yield* Path.Path;
+    const fs = yield* FileSystem.FileSystem;
 
-  const mypath = path.resolve("./src/", "input.txt");
-  const fileContents = yield* fs.readFileString(mypath);
-  const data = parseData(fileContents);
+    const mypath = path.resolve("./src/", "input.txt");
+    const fileContents = yield* fs.readFileString(mypath);
+    const data = parseData(fileContents);
 
-  const areColumnsEqual = data[0].length === data[1].length;
+    const areColumnsEqual = data[0].length === data[1].length;
 
-  if (!areColumnsEqual) {
-    throw new Error("Columns are not equal");
-  }
+    if (!areColumnsEqual) {
+        throw new Error("Columns are not equal");
+    }
 
-  const sorted = orderColumns(data);
-  const diff = createDiff(sorted);
+    const sorted = orderColumns(data);
+    const diff = createDiff(sorted);
 
-  const diffSum = diff.reduce((acc, x) => acc + x, 0);
-  const similarityScore = calculateSimilarityScore(sorted).reduce(
-    (acc, x) => acc + x,
-    0
-  );
+    const diffSum = diff.reduce((acc, x) => acc + x, 0);
+    const similarityScore = calculateSimilarityScore(sorted).reduce((acc, x) => acc + x, 0);
 
-  yield* Effect.log({
-    diffSum,
-    similarityScore,
-  });
+    yield* Effect.log({
+        diffSum,
+        similarityScore,
+    });
 
-  return {
-    diffSum,
-    similarityScore,
-  };
+    return {
+        diffSum,
+        similarityScore,
+    };
 });
 
-NodeRuntime.runMain(
-  program.pipe(Effect.provide(Logger.pretty), Effect.provide(NodeContext.layer))
-);
+NodeRuntime.runMain(program.pipe(Effect.provide(Logger.pretty), Effect.provide(NodeContext.layer)));
